@@ -4,101 +4,83 @@
       <h1 class="text-center">Network Delays During National Lockdowns</h1>
 
       <div class="row justify-center">
-        <div class="col-6 IHR_description q-pa-lg">
+        <div class="IHR_description q-pa-lg ">
           <p>
             As part of the
-            <a href="https://labs.ripe.net/Members/becha/hackathons-in-the-time-of-corona" targeet="_blank"
-              >RIPE Hackathon on the health of the Internet during the COVID-19 crisis</a
-            >, we hacked this experimental interface to look at network delays during national lockdowns. This is an attempt to monitor and
+            <a href="https://labs.ripe.net/Members/becha/hackathons-in-the-time-of-corona" targeet="_blank">RIPE Hackathon
+              on the health of the Internet during the COVID-19 crisis</a>, we hacked this experimental interface to look
+            at network delays during national lockdowns. This is an attempt to monitor and
             study congestion that could occur at large eyeball networks during mass quarantines.
           </p>
           <p>
-            Select a country below to display estimated delays from major eyeball ASes. As a reference we display a week of data taken one
-            month before the lockdown (left plots), then show the week during the official lockdown (center plots), and the latest 7 days of
+            Select a country below to display estimated delays from major eyeball ASes. As a reference we display a week
+            of data taken one
+            month before the lockdown (left plots), then show the week during the official lockdown (center plots), and
+            the latest 7 days of
             data (right plots). All dates and times are UTC.
           </p>
           <p>
-            Displayed delays are computed from <a href="https://atlas.ripe.net/" target="_blank">RIPE Atlas</a> traceroutes towards Google
-            DNS, the networks' main upstream providers, and, for European countries, two large IXPs (AMS-IX and DE-CIX), and the E-root DNS
+            Displayed delays are computed from <a href="https://atlas.ripe.net/" target="_blank">RIPE Atlas</a>
+            traceroutes towards Google
+            DNS, the networks' main upstream providers, and, for European countries, two large IXPs (AMS-IX and DE-CIX),
+            and the E-root DNS
             server for other countries. See also our
-            <router-link :to="{ name: 'documentation', hash: '#Network_delay' }">documentation on network delays</router-link> and
-            <a href="https://labs.ripe.net/Members/romain_fontugne/network-delays-in-times-of-corona" target="_blank">RIPE Labs article</a>.
+            <router-link :to="{ name: 'documentation', hash: '#Network_delay' }">documentation on network
+              delays</router-link> and
+            <a href="https://labs.ripe.net/Members/romain_fontugne/network-delays-in-times-of-corona" target="_blank">RIPE
+              Labs article</a>.
           </p>
           <p>Be patient. Loading all graphs may take some time for certain countries.</p>
         </div>
       </div>
       <div class="row justify-center box_corona">
-        <div class="col-3">
-            <!-- <button @click="generateReport()" class="np-btn">Save this report as pdf</button> -->
+        <div class="Select_Country">
+          <!-- <button @click="generateReport()" class="np-btn">Save this report as pdf</button> -->
           <q-select v-model="selected" :options="selection" label="Select a country" />
         </div>
       </div>
       <div class="row toolbox">
-        <div class="offset-10">
+        <div class="ToolBox">
           <h3>Toolbox</h3>
           <q-toggle v-model="searchBar" label="Add more destination networks" />
         </div>
       </div>
       <div v-if="selected">
-        </div>
-        <div v-for="asn in asns" :key="`${asn.name}-${asn.as}`">
-          <div class="row">
-            <div class="col-12 text-center q-pa-md">
-              <div class="IHR_anchor" :id="asn.as"></div>
-              <h2>{{ asn.name }} (AS{{ asn.as }})</h2>
-            </div>
-            <div class="column_corona">
-              <network-delay-chart
-                :start-time="before_start"
-                :end-time="before_end"
-                :startPointName="asn.as.toString()"
-                startPointType="AS"
-                :endPointNames="endpoints[asn.as]"
-                ref="networkDelayChart_before"
-                :fetch="fetch"
-                :clear="clear"
-                @max-value="updateYaxis"
-                :yMax="yMax"
-                :searchBar="searchBar"
-              />
-              <p><center>One month before Lockdown</center></p>
-            </div>
-            <div class="column_corona">
-              <network-delay-chart
-                :start-time="during_start"
-                :end-time="during_end"
-                :startPointName="asn.as.toString()"
-                startPointType="AS"
-                :endPointNames="endpoints[asn.as]"
-                ref="networkDelayChart"
-                :fetch="fetch"
-                :clear="clear"
-                @max-value="updateYaxis"
-                :yMax="yMax"
-                :searchBar="searchBar"
-              />
-              <p><center>Lockdown({{ countriesInfo[selected['value']].start }})</center></p>
-            </div>
-            <div class="column_corona">
-              <network-delay-chart
-                :start-time="startTime"
-                :end-time="endTime"
-                :startPointName="asn.as.toString()"
-                startPointType="AS"
-                :endPointNames="endpoints[asn.as]"
-                ref="networkDelayChart"
-                :fetch="fetch"
-                :clear="clear"
-                @max-value="updateYaxis"
-                :yMax="yMax"
-                :searchBar="searchBar"
-              />
-              <p><center>Latest</center></p>
-            </div>
+      </div>
+      <div v-for="asn in asns" :key="`${asn.name}-${asn.as}`">
+        <div class="row">
+          <div class="col-12 text-center q-pa-md">
+            <div class="IHR_anchor" :id="asn.as"></div>
+            <h2>{{ asn.name }} (AS{{ asn.as }})</h2>
+          </div>
+          <div class="column_corona">
+            <network-delay-chart :start-time="before_start" :end-time="before_end" :startPointName="asn.as.toString()"
+              startPointType="AS" :endPointNames="endpoints[asn.as]" ref="networkDelayChart_before" :fetch="fetch"
+              :clear="clear" @max-value="updateYaxis" :yMax="yMax" :searchBar="searchBar" />
+            <p>
+              <center>One month before Lockdown</center>
+            </p>
+          </div>
+          <div class="column_corona">
+            <network-delay-chart :start-time="during_start" :end-time="during_end" :startPointName="asn.as.toString()"
+              startPointType="AS" :endPointNames="endpoints[asn.as]" ref="networkDelayChart" :fetch="fetch" :clear="clear"
+              @max-value="updateYaxis" :yMax="yMax" :searchBar="searchBar" />
+            <p>
+              <center>Lockdown({{ countriesInfo[selected['value']].start }})</center>
+            </p>
+          </div>
+          <div class="column_corona">
+            <network-delay-chart :start-time="startTime" :end-time="endTime" :startPointName="asn.as.toString()"
+              startPointType="AS" :endPointNames="endpoints[asn.as]" ref="networkDelayChart" :fetch="fetch" :clear="clear"
+              @max-value="updateYaxis" :yMax="yMax" :searchBar="searchBar" />
+            <p>
+              <center>Latest</center>
+            </p>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -141,7 +123,7 @@ export default {
       selectedCountry == undefined ? null : { value: selectedCountry, label: `${selectedCountry} (${lockdowns[selectedCountry].start})` }
   },
   methods: {
-    pushRoute() {}, //required for mixin
+    pushRoute() { }, //required for mixin
     updateYaxis(newMaxY) {
       this.yMax = this.yMax > newMaxY ? this.yMax : newMaxY
     },
@@ -158,7 +140,7 @@ export default {
       // console.log('button is clicked')
     },
   },
-  mounted() {},
+  mounted() { },
   watch: {
     selected(newValue) {
       this.updateQuery({ country: newValue.value })
@@ -202,9 +184,24 @@ export default {
 
 <style lang="stylus">
 @import '../styles/quasar.variables';
+.Select_Country
+    @media screen and (min-width: 768px) 
+        width 25%
+    @media screen and (max-width: 768px) 
+        width 200px
+.ToolBox
+    margin-left auto
 
 .IHR_description
     font-weight 400
+    @media (max-width: 900px) and (min-width: 768px)
+        padding 0px
+        width 80%
+
+    @media (max-width: 768px)
+        padding 0px
+        width 90%
+
 
 .IHR_anchor
     display block
